@@ -21,6 +21,7 @@
 	</languages>
 
 	<files>
+		<folder>forms</folder>
 		<folder>services</folder>
 		<folder plugin="keywords">src</folder>
 		<folder>language</folder>
