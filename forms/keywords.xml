@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
     <fields name="params" label="COM_CONTENT_ATTRIBS_FIELDSET_LABEL">
-        <field
-                name="menu-meta_keywords"
-                type="textarea"
-                label="Keywords"
-        />
+        <fieldset name="metadata">
+            <field
+                    name="menu-meta_keywords"
+                    type="textarea"
+                    label="Keywords"
+            />
+        </fieldset>
     </fields>
 </form>

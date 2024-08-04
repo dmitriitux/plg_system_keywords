@@ -3,11 +3,8 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Application\CMSApplication;
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Language\Text;
 use Joomla\Event\Event;
 use Joomla\Event\SubscriberInterface;
 
@@ -39,22 +36,43 @@ class Plugin extends CMSPlugin implements SubscriberInterface
 	public static function getSubscribedEvents(): array
 	{
 		return [
-			'onAfterRender'        => 'onAfterRender',
+			'onBeforeRender'       => 'onBeforeRender',
 			'onContentPrepareForm' => 'onContentPrepareForm',
 		];
 	}
 
-
-	public function onAfterRender()
+	public function onBeforeRender()
 	{
-		$body = $this->app->getBody();
-		$this->app->setBody($body);
+		if (!$this->app->isClient('site'))
+		{
+			return;
+		}
+
+		$menu     = $this->app->getMenu()->getActive();
+		$keywords = $menu->getParams()->get('menu-meta_keywords', '');
+
+		$this->app->getDocument()->setMetaData('keywords', htmlentities($keywords));
+
 	}
 
-	public function onContentPrepareForm(Form $form, $data)
+	public function onContentPrepareForm(Event $event)
 	{
-		$form_name    = str_replace('.', '/', $form->getName());
-var_dump($form_name);
+		/** @var Form $form */
+		$form = $event->getArgument('form');
+
+		if ($form->getName() !== 'com_menus.item')
+		{
+			return;
+		}
+
+		$file = JPATH_PLUGINS . '/system/keywords/forms/keywords.xml';
+
+		if (!file_exists($file))
+		{
+			return;
+		}
+
+		$form->loadFile($file);
 	}
 
 }
